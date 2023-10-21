@@ -1,0 +1,10 @@
+defaults:
+  - override hydra/job_logging: custom
+hydra:
+  job:
+    name: transfer_graph
+    chdir: true
+  sweep:
+    subdir: ${hydra.job.num}_${hydra.job.override_dirname}
+test_category:
+  test_key: 42

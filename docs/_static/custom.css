@@ -1,0 +1,202 @@
+/* CSS Stylesheet */
+
+/* color search field */
+.sidebar-search {
+    background: black;
+}
+/* move search icon to the foreground */
+.sidebar-search-container:before {
+    z-index: 100;
+}
+
+
+/***** light mode *****/
+h1 {
+    color: #0000FF;
+}
+/* Python keywords: from, import */
+.highlight .kn {
+    color: #0000FF
+}
+/* in */
+.highlight .ow {
+    color: #0000FF
+}
+/* function name */
+.highlight .nn {
+    color: #ed8713
+}
+/* str */
+.highlight .s1 {
+    color: #4e9a06
+}
+.highlight .s2 {
+    color: #4e9a06
+}
+/* = . */
+.highlight .o {
+    color: black;
+    font-weight: normal;
+}
+/* >>>> */
+.highlight .gp {
+    color: #FE0D6C
+}
+/* def */
+.highlight .k {
+    color: #0000FF
+}
+
+/* function name */
+.highlight .nf {
+    color: #ed8713
+}
+/* # comment */
+.highlight .c1 {
+    color: #6C7D8C
+}
+/* numbers */
+.highlight .mi {
+    color: black;
+    font-weight: normal;
+}
+
+/***** dark mode *****/
+body[data-theme="dark"] h1 {
+    color: white
+}
+/* toc border */
+body[data-theme="dark"] .sidebar-drawer {
+    border-right: 0.5px solid #0000FF;
+}
+/* Code background */
+body[data-theme="dark"] .highlight {
+    background: #1c1c1c;
+    color: white;
+}
+/* Code */
+body[data-theme="dark"] .highlight .n {
+    color: white
+}
+/* Python keywords: from, import */
+body[data-theme="dark"] .highlight .kn {
+    color: #447fcf
+}
+/* in */
+body[data-theme="dark"] .highlight .ow {
+    color: #447fcf;
+}
+/* function name */
+body[data-theme="dark"] .highlight .nn {
+    color: #ed9d13
+}
+/* str */
+body[data-theme="dark"] .highlight .s1 {
+    color: #6ab825
+}
+body[data-theme="dark"] .highlight .s2 {
+    color: #6ab825
+}
+/* = . */
+body[data-theme="dark"] .highlight .o {
+    color: white;
+    font-weight: normal;
+}
+/* >>>> */
+body[data-theme="dark"] .highlight .gp {
+    color: #FE0D6C
+}
+
+/* def */
+body[data-theme="dark"] .highlight .k {
+    color: #447fcf
+}
+
+/* function name */
+body[data-theme="dark"] .highlight .nf {
+    color: #ed9d13
+}
+/* print */
+body[data-theme="dark"] .highlight .nb {
+    color: ##white
+}
+/* bool */
+body[data-theme="dark"] .highlight .kc {
+    color: #24909d
+}
+/* numbers */
+body[data-theme="dark"] .highlight .mi {
+    color: white;
+    font-weight: normal;
+}
+
+
+/***** auto mode - prefers dark *****/
+@media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) h1 {
+        color: white;
+    }
+    /* toc border */
+    body:not([data-theme="light"]) .sidebar-drawer {
+        border-right: 0.5px solid #0000FF;
+    }
+    /* Code background */
+    body:not([data-theme="light"]) .highlight {
+        background: #1c1c1c;
+        color: white;
+    }
+    /* Code */
+    body:not([data-theme="light"]) .highlight .n {
+        color: white
+    }
+    /* Python keywords: from, import */
+    body:not([data-theme="light"]) .highlight .kn {
+        color: #447fcf
+    }
+    /* function name */
+    body:not([data-theme="light"]) .highlight .nn {
+        color: #ed9d13
+    }
+    /* str */
+    body:not([data-theme="light"]) .highlight .s1 {
+        color: #6ab825
+    }
+    body:not([data-theme="light"]) .highlight .s2 {
+        color: #6ab825
+    }
+    /* = . */
+    body:not([data-theme="light"]) .highlight .o {
+        color: white;
+        font-weight: normal;
+    }
+    /* >>>> */
+    body:not([data-theme="light"]) .highlight .gp {
+        color: #FE0D6C
+    }
+    /* def */
+    body:not([data-theme="light"]) .highlight .k {
+        color: #447fcf
+    }
+
+    /* function name */
+    body:not([data-theme="light"]) .highlight .nf {
+        color: #ed9d13
+    }
+    /* print */
+    body:not([data-theme="light"]) .highlight .nb {
+        color: white
+    }
+    /* bool */
+    body:not([data-theme="light"]) .highlight .kc {
+        color: #24909d
+    }
+    /* numbers */
+    body:not([data-theme="light"]) .highlight .mi {
+        color: white;
+        font-weight: normal;
+    }
+    /* in */
+    body:not([data-theme="light"]) .highlight .ow {
+        color: #447fcf;
+    }
+}

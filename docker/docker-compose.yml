@@ -1,0 +1,11 @@
+version: '3'
+name: transfer_graph
+
+services:
+  transfer_graph:
+    image: 'statworx/transfer_graph:latest'
+    build:
+      context: ./../
+      dockerfile: docker/transfer_graph/Dockerfile
+    env_file: .env
+    tty: true

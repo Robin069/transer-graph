@@ -1,0 +1,18 @@
+# Changes here will be overwritten by Copier
+_commit: 94c70d6
+_src_path: https://github.com/Robin069/project-template.git
+author_email: robin.baudisch@gmail.com
+author_fullname: Robin Baudisch
+ci: none
+client_name: Private
+documentation: sphinx
+git_repository: https://github.com/Robin069/transfer-graph.git
+orchestrator: hydra
+package_name: transfer_graph
+project_description: ''
+project_name: transfer-graph
+python_version: 3.11.6
+typing_level: optional
+use_docker: true
+use_jupyterlab: true
+
