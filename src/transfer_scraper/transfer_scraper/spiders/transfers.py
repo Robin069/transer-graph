@@ -48,7 +48,7 @@ def parse_amount(value):
                 return None
 
 
-def parse_table(clubname, table, i):
+def parse_table(league, season, clubname, table, i):
     rows = table.xpath("tbody/tr")
     rows_list = []
     for row in rows:
@@ -63,10 +63,10 @@ def parse_table(clubname, table, i):
         # Fifth column is the player market value
         market_value = row.xpath("td[@class='rechts mw-transfer-cell']/text()").get()
         market_value = parse_amount(market_value)
-        # Sixth column is the club, skip if Without Club or Retired
+        # Sixth column is the club
         club = row.xpath("td[@class='no-border-links verein-flagge-transfer-cell']/a/@title").get()
-        if club == "Without Club" or club == "Retired":
-            break
+        if club is None:
+            club = "Career break"
         # Seventh column is the actual transfer fee, skip if End of loan
         transfer_fee = row.xpath("td[contains(@class, 'rechts')]/a/text()").get()
         if transfer_fee is None:
@@ -88,6 +88,8 @@ def parse_table(clubname, table, i):
 
         # Create a dictionary with the data
         data = {
+            "league": league,
+            "season": season,
             "player": player,
             "age": age,
             "nation": nation,
@@ -113,14 +115,22 @@ class TransfersSpider(scrapy.Spider):
         "https://www.transfermarkt.com/serie-a/transfers/wettbewerb/IT1",
         "https://www.transfermarkt.com/ligue-1/transfers/wettbewerb/FR1",
     ]
-    # For each url in league_urls, generate a url for saison_id from 1994 to 2023
+    # For each url in league_urls, generate a url for saison_id from 1993 to 2023
     # and add it to the start_urls list
     start_urls = []
     for url in league_urls:
-        for saison_id in range(1994, 2024):
+        for saison_id in range(1993, 2024):
             start_urls.append(f"{url}/plus/?saison_id={saison_id}&s_w=&leihe=1&intern=0")
 
     def parse(self, response):
+        league = response.xpath(
+            "//div[@class='data-header__headline-wrapper data-header__headline-wrapper--oswald']/text()"
+        ).get()
+        league = league.replace("\n", "").strip()
+        season = response.xpath(
+            "//div[@class='box']/h1[@class='content-box-headline']/text()"
+        ).get()
+        season = season.split("Transfers ")[-1].strip()
         for box in response.xpath(
             "//div[@class='box']/h2[@class='content-box-headline content-box-headline--inverted content-box-headline--logo']"
         ):
@@ -130,6 +140,6 @@ class TransfersSpider(scrapy.Spider):
             tables = extract_tables(box)
             # Parse each table
             for i, table in enumerate(tables):
-                table = parse_table(clubname, table, i)
+                table = parse_table(league, season, clubname, table, i)
                 for row in table:
                     yield row
