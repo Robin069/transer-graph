@@ -66,7 +66,9 @@ def parse_table(league, season, clubname, table, i):
         # Sixth column is the club
         club = row.xpath("td[@class='no-border-links verein-flagge-transfer-cell']/a/@title").get()
         if club is None:
-            club = "Career break"
+            club = row.xpath(
+                "td[@class='no-border-links verein-flagge-transfer-cell']/text()"
+            ).get()
         # Seventh column is the actual transfer fee, skip if End of loan
         transfer_fee = row.xpath("td[contains(@class, 'rechts')]/a/text()").get()
         if transfer_fee is None:
