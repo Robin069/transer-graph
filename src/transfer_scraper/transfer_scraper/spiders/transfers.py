@@ -10,7 +10,7 @@ def extract_tables(box):
 
 
 def parse_amount(value):
-    if value == "-" or "free transfer" in value or "?" in value:
+    if value == "-" or "free transfer" in value:
         return 0
     else:
         if "m" in value:
@@ -63,28 +63,27 @@ def parse_table(clubname, table, i):
         # Fifth column is the player market value
         market_value = row.xpath("td[@class='rechts mw-transfer-cell']/text()").get()
         market_value = parse_amount(market_value)
-        # Sixth column is the club
+        # Sixth column is the club, skip if Without Club or Retired
         club = row.xpath("td[@class='no-border-links verein-flagge-transfer-cell']/a/@title").get()
-        # Seventh column is the actual transfer fee
+        if club == "Without Club" or club == "Retired":
+            break
+        # Seventh column is the actual transfer fee, skip if End of loan
         transfer_fee = row.xpath("td[contains(@class, 'rechts')]/a/text()").get()
-        if "loan" in transfer_fee.lower():
-            loan = True
-            if "End of loan" in transfer_fee:
-                transfer_type = "loan_end"
-                transfer_fee = 0
-            elif "Loan fee" in transfer_fee:
-                transfer_type = "loan_fee"
-                transfer_fee = row.xpath(
-                    "td[@class='rechts ']/a/i[@class='normaler-text']/text()"
-                ).get()
-                transfer_fee = parse_amount(transfer_fee)
-            else:
-                transfer_type = "loan"
-                transfer_fee = 0
+        if "End of loan" in transfer_fee:
+            break
         else:
-            loan = False
-            transfer_type = "transfer"
-            transfer_fee = parse_amount(transfer_fee)
+            if "loan" in transfer_fee.lower():
+                loan = True
+                if "Loan fee" in transfer_fee:
+                    transfer_type = "loan_fee"
+                    transfer_fee = parse_amount(transfer_fee)
+                else:
+                    transfer_type = "loan"
+                    transfer_fee = 0
+            else:
+                loan = False
+                transfer_type = "transfer"
+                transfer_fee = parse_amount(transfer_fee)
 
         # Create a dictionary with the data
         data = {
@@ -106,13 +105,19 @@ def parse_table(clubname, table, i):
 
 class TransfersSpider(scrapy.Spider):
     name = "transfers"
-    start_urls = [
-        "https://www.transfermarkt.com/bundesliga/transfers/wettbewerb/L1/plus/?saison_id=2023&s_w=&leihe=1&intern=0",
-        "https://www.transfermarkt.com/premier-league/transfers/wettbewerb/GB1/plus/?saison_id=2023&s_w=&leihe=1&intern=0",
-        "https://www.transfermarkt.com/primera-division/transfers/wettbewerb/ES1/plus/?saison_id=2023&s_w=&leihe=1&intern=0",
-        "https://www.transfermarkt.com/serie-a/transfers/wettbewerb/IT1/plus/?saison_id=2023&s_w=&leihe=1&intern=0",
-        "https://www.transfermarkt.com/ligue-1/transfers/wettbewerb/FR1/plus/?saison_id=2023&s_w=&leihe=1&intern=0",
+    league_urls = [
+        "https://www.transfermarkt.com/bundesliga/transfers/wettbewerb/L1",
+        "https://www.transfermarkt.com/premier-league/transfers/wettbewerb/GB1",
+        "https://www.transfermarkt.com/primera-division/transfers/wettbewerb/ES1",
+        "https://www.transfermarkt.com/serie-a/transfers/wettbewerb/IT1",
+        "https://www.transfermarkt.com/ligue-1/transfers/wettbewerb/FR1",
     ]
+    # For each url in league_urls, generate a url for saison_id from 1994 to 2023
+    # and add it to the start_urls list
+    start_urls = []
+    for url in league_urls:
+        for saison_id in range(1994, 2024):
+            start_urls.append(f"{url}/plus/?saison_id={saison_id}&s_w=&leihe=1&intern=0")
 
     def parse(self, response):
         for box in response.xpath(
