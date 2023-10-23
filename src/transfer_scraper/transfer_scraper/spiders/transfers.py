@@ -69,21 +69,22 @@ def parse_table(clubname, table, i):
             break
         # Seventh column is the actual transfer fee, skip if End of loan
         transfer_fee = row.xpath("td[contains(@class, 'rechts')]/a/text()").get()
-        if "End of loan" in transfer_fee:
+        if transfer_fee is None:
             break
-        else:
-            if "loan" in transfer_fee.lower():
-                loan = True
-                if "Loan fee" in transfer_fee:
-                    transfer_type = "loan_fee"
-                    transfer_fee = parse_amount(transfer_fee)
-                else:
-                    transfer_type = "loan"
-                    transfer_fee = 0
-            else:
-                loan = False
-                transfer_type = "transfer"
+        if "loan" in transfer_fee.lower():
+            loan = True
+            if "End of loan" in transfer_fee:
+                break
+            elif "Loan fee" in transfer_fee:
+                transfer_type = "loan_fee"
                 transfer_fee = parse_amount(transfer_fee)
+            else:
+                transfer_type = "loan"
+                transfer_fee = 0
+        else:
+            loan = False
+            transfer_type = "transfer"
+            transfer_fee = parse_amount(transfer_fee)
 
         # Create a dictionary with the data
         data = {

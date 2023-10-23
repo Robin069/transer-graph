@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "transfer_graph"
 version = "0.1.0"
-description = ""
+description = "Visualizing historic transfer movements in the Top 5 European Football Leagues."
 authors = ["Robin Baudisch <robin.baudisch@gmail.com>"]
 readme = "README.md"
 
@@ -19,6 +19,8 @@ hydra-core = ">=1.1.2"
 # === USER DEFINED DEPENDENCIES HERE ===
 
 # Developement Dependencies
+scrapy = "^2.11.0"
+pandas = "^2.1.1"
 [tool.poetry.group.dev.dependencies]
 ipykernel = ">=6.9.2"
 jupyterlab = ">=3.3.4"
@@ -119,5 +121,5 @@ exclude_lines = [
     "raise NotImplementedError",
     "raise AssertionError",
     # Don't complain about abstract methods, they aren't run:
-    "@(abc\\.)?abstractmethod"
+    "@(abc\\.)?abstractmethod",
 ]
