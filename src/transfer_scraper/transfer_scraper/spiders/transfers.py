@@ -52,6 +52,8 @@ def parse_table(league, season, clubname, table, i):
     rows = table.xpath("tbody/tr")
     rows_list = []
     for row in rows:
+        if row.xpath("td/text()").get().strip() == "No new arrivals":
+            break
         # First column is the player name
         player = row.xpath("td/div[@class='di nowrap']/span/a/text()").get()
         # Second column is the player age
@@ -69,6 +71,7 @@ def parse_table(league, season, clubname, table, i):
             club = row.xpath(
                 "td[@class='no-border-links verein-flagge-transfer-cell']/text()"
             ).get()
+        club = club.replace("\xa0", "").strip()
         # Seventh column is the actual transfer fee, skip if End of loan
         transfer_fee = row.xpath("td[contains(@class, 'rechts')]/a/text()").get()
         if transfer_fee is None:
@@ -123,6 +126,9 @@ class TransfersSpider(scrapy.Spider):
     for url in league_urls:
         for saison_id in range(1993, 2024):
             start_urls.append(f"{url}/plus/?saison_id={saison_id}&s_w=&leihe=1&intern=0")
+    start_urls = [
+        "https://www.transfermarkt.com/laliga/transfers/wettbewerb/ES1/plus/?saison_id=2003&s_w=&leihe=1&intern=0"
+    ]
 
     def parse(self, response):
         league = response.xpath(
@@ -138,6 +144,7 @@ class TransfersSpider(scrapy.Spider):
         ):
             # Extract title of the a tag
             clubname = extract_clubname(box)
+            print(clubname)
             # Get all tables in the box
             tables = extract_tables(box)
             # Parse each table
