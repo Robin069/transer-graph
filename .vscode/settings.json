@@ -84,5 +84,12 @@
     },
     "[python]": {
         "editor.defaultFormatter": "ms-python.black-formatter"
-    }
+    },
+    "cSpell.words": [
+        "barplot",
+        "figsize",
+        "whitegrid",
+        "xlabel",
+        "ylabel"
+    ]
 }

@@ -10,42 +10,17 @@ def extract_tables(box):
 
 
 def parse_amount(value):
-    if value == "-" or "free transfer" in value:
+    if "free transfer" in value.lower():
         return 0
     else:
-        if "m" in value:
+        if "loan fee" in value.lower():
+            value = value.replace("Loan fee:", "").strip()
+        if "m" in value.lower():
             return int(float(value.replace("€", "").replace("m", "").replace(",", ".")) * 1000000)
-
-        elif "k" in value:
+        elif "k" in value.lower():
             return int(float(value.replace("€", "").replace("k", "").replace(",", "."))) * 1000
         else:
-            if "End of loan" in value or value == "loan transfer":
-                return 0
-            if "Loan fee" in value:
-                if "m" in value:
-                    return int(
-                        float(
-                            value.replace("Loan fee:", "")
-                            .replace("€", "")
-                            .replace("m", "")
-                            .replace(",", ".")
-                            .strip()
-                        )
-                        * 1000000
-                    )
-                elif "k" in value:
-                    return int(
-                        float(
-                            value.replace("Loan fee:", "")
-                            .replace("€", "")
-                            .replace("k", "")
-                            .replace(",", ".")
-                            .strip()
-                        )
-                        * 1000
-                    )
-            else:
-                return None
+            return None
 
 
 def parse_table(league, season, clubname, table, i):
@@ -85,7 +60,7 @@ def parse_table(league, season, clubname, table, i):
                 transfer_fee = parse_amount(transfer_fee)
             else:
                 transfer_type = "loan"
-                transfer_fee = 0
+                transfer_fee = None
         else:
             loan = False
             transfer_type = "transfer"
@@ -126,9 +101,6 @@ class TransfersSpider(scrapy.Spider):
     for url in league_urls:
         for saison_id in range(1993, 2024):
             start_urls.append(f"{url}/plus/?saison_id={saison_id}&s_w=&leihe=1&intern=0")
-    start_urls = [
-        "https://www.transfermarkt.com/laliga/transfers/wettbewerb/ES1/plus/?saison_id=2003&s_w=&leihe=1&intern=0"
-    ]
 
     def parse(self, response):
         league = response.xpath(
